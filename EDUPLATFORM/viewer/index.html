@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Viewer</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .viewerHeader {
+        margin-top: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.75);
+        transition: 0.15s ease;
+      }
+      .back:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+      .frame {
+        width: 100%;
+        height: min(78vh, 900px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="container viewerHeader">
+      <a class="back" href="/">← Back</a>
+      <div>
+        <div class="muted" id="kicker"></div>
+        <h1 class="title" id="title" style="margin: 0">Viewer</h1>
+      </div>
+      <div class="muted" id="type"></div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <div class="muted" id="path"></div>
+      </section>
+      <section class="frame" aria-label="Material viewer">
+        <iframe id="frame" title="Material" loading="lazy"></iframe>
+      </section>
+    </main>
+
+    <script type="module">
+      const MANIFEST_URL = "/content/manifest.json";
+      const qs = new URLSearchParams(location.search);
+      const id = qs.get("id");
+
+      const $ = (sel) => document.querySelector(sel);
+      const $title = $("#title");
+      const $kicker = $("#kicker");
+      const $type = $("#type");
+      const $path = $("#path");
+      const $frame = $("#frame");
+
+      function setError(msg) {
+        $title.textContent = "Not found";
+        $kicker.textContent = "";
+        $type.textContent = "";
+        $path.textContent = msg;
+        $frame.remove();
+      }
+
+      if (!id) {
+        setError('Missing "?id=" query parameter.');
+      } else {
+        fetch(MANIFEST_URL, { cache: "no-store" })
+          .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`Manifest load failed (${r.status})`))))
+          .then((manifest) => {
+            const items = Array.isArray(manifest?.items) ? manifest.items : [];
+            const item = items.find((x) => x?.id === id);
+            if (!item) {
+              setError(`No item with id "${id}" found in content/manifest.json.`);
+              return;
+            }
+
+            document.title = item.title ?? "Viewer";
+            $title.textContent = item.title ?? item.id;
+            $kicker.textContent = item.label ?? "Material";
+            $type.textContent = (item.type ?? "link").toUpperCase();
+            $path.textContent = item.path ?? "";
+
+            // This works for PDFs and HTML (and most web-viewable formats).
+            $frame.src = item.path;
+          })
+          .catch((e) => setError(String(e?.message ?? e)));
+      }
+    </script>
+  </body>
+</html>
+

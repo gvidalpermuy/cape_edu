@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduPlatform</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="container header">
+      <div>
+        <h1 class="title">EduPlatform</h1>
+        <p class="subtitle">Share materials with your students.</p>
+      </div>
+      <div class="headerRight">
+        <nav class="tabs" aria-label="Top navigation">
+          <a class="tab tab--active" href="/">Overview</a>
+          <a class="tab" href="/#materials">Study Content</a>
+          <a class="tab" href="/#quiz">Quiz yourself</a>
+          <a class="tab" href="/#terms">Key terms</a>
+        </nav>
+        <button id="adminBtn" class="tab tab--admin" type="button">
+          Admin login
+        </button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2 class="card__title">Module at a glance</h2>
+        <ul class="bullets">
+          <li>
+            This page auto-generates buttons from <code>content/manifest.json</code>.
+          </li>
+          <li>Upload a PDF or a page, add it to the manifest, and it’s live.</li>
+          <li>
+            Each button opens a dedicated viewer page for the selected material.
+          </li>
+        </ul>
+      </section>
+
+      <section id="adminPanel" class="card card--muted" hidden>
+        <div class="adminHeader">
+          <h2 class="card__title" style="margin: 0">Admin</h2>
+          <button id="adminLogoutBtn" class="tab" type="button">Logout</button>
+        </div>
+        <p class="muted" style="margin: 10px 0 0">
+          You’re signed in. Use this area for admin-only tools (we can add
+          “add material” helpers next).
+        </p>
+      </section>
+
+      <section id="materials" class="materials">
+        <div class="materials__header">
+          <h2 class="section-title">Materials</h2>
+          <div class="muted" id="materialsMeta" aria-live="polite"></div>
+        </div>
+        <div id="materialsGrid" class="grid" aria-live="polite"></div>
+      </section>
+
+      <section id="quiz" class="card card--muted">
+        <h2 class="card__title">Quiz yourself</h2>
+        <p class="muted">
+          (Optional) Later you can add quizzes per topic. For now this is a
+          placeholder section.
+        </p>
+      </section>
+
+      <section id="terms" class="card card--muted">
+        <h2 class="card__title">Key terms</h2>
+        <p class="muted">
+          (Optional) Add a terms page in the manifest, or link to a PDF.
+        </p>
+      </section>
+    </main>
+
+    <footer class="container footer">
+      <span class="muted">Powered by a static site (Netlify-friendly).</span>
+    </footer>
+
+    <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
